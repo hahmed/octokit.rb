@@ -17,7 +17,11 @@ module Octokit
       # @example Get the readme file for a repo
       #   Octokit.readme("octokit/octokit.rb")
       def readme(repo, options={})
-        get "#{Repository.path repo}/readme", options
+        response = get "#{Repository.path repo}/readme", options
+        if response[:encoding] == "base64"
+          response[:content] = Base64.strict_encode64(response[:content])
+        end
+        response
       end
 
       # Receive a listing of a repository folder or the contents of a file
